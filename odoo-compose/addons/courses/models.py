@@ -35,6 +35,11 @@ class Course(models.Model):
                 }
             }
         
+    def calculate_total_price(self):
+        #log
+        _logger.info("Executing some_action for record: %s", self.nombre)
+        self.total_price = self.price - self.amount_discount
+        
     @api.depends('duration', 'nombre')
     def _compute_name(self):
         for record in self:
@@ -59,7 +64,7 @@ class Student(models.Model):
     @api.constrains('age')
     def _check_minimum_age(self):
         for record in self:
-            if record.enrolled_courses and record.age < record.enrolled_courses.min_age:
+            if record.age < 18:
                 raise ValidationError("Student does not meet the minimum age requirement for this course.")
 
     @api.depends('name', 'age')
